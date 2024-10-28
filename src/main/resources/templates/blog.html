@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        function includeHTML() {
+            document.querySelectorAll("[data-include]").forEach(el => {
+                const file = el.getAttribute("data-include");
+                fetch(file)
+                    .then(response => response.text())
+                    .then(data => el.innerHTML = data)
+                    .catch(error => console.error('Error loading HTML:', error));
+            });
+        }
+        window.onload = includeHTML;
+    </script>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <div data-include="header.html"></div>
+
+    <!-- Menu Bar -->
+    <div data-include="menu.html"></div>
+
+    <!-- Blog Content Area -->
+    <main class="blog-content">
+        <!-- Example Blog Post with Text -->
+        <div class="blog-post">
+            <h2>This blog is..</h2>
+            <p>
+                This blog is for tracking disciplines, view some of saved images.
+                <br>Blog's server is on EC2(AWS), made of SpringBoot(Java),
+                <br>Images are on local SSD and fastAPI(python) is serving it.
+                <br>Visit 'about' and check more information.
+                <br>You can contact me at: newyoung124@naver.com
+            </p>
+        </div>
+
+        <!-- Example Blog Post with Image Grid -->
+        <div class="blog-post">
+            <h2>Disciplines</h2>
+            <div id="annual_calendar_1">
+
+            </div>
+            <div id="annual_calendar_2">
+
+            </div>
+            
+            <script>
+                function createCalendar(elementId) {
+                    tbody = document.createElement('table');
+                    tbody.style = 'border-spacing:5px;';
+                
+                    const day_arr = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+                    const week_arr = [];
+                
+                    for(let i=0; i<53; i++) {
+                        week_arr.push(i);
+                    }
+                    
+                    day_arr.forEach(function(day) {
+                        let row = document.createElement('tr');
+                        row.className = day;
+                
+                        week_arr.forEach(function(week) {
+                            let col = document.createElement('td');           
+                
+                            col.style = 'width:12px; height:14px; background-Color:lightgrey; border-radius:2px;';
+                            row.appendChild(col);
+                        });
+                
+                        tbody.appendChild(row);
+                    });
+                
+                    document.getElementById(elementId).appendChild(tbody);
+                }
+                
+                createCalendar('annual_calendar_1')
+                createCalendar('annual_calendar_2')
+            </script>
+        </div>
+
+        <!-- Example Blog Post with Image Grid -->
+        <div class="blog-post">
+            <h2>Latest Images</h2>
+            <div class="image-grid">
+                <img src="https://via.placeholder.com/400x400" alt="Image 1">
+                <img src="https://via.placeholder.com/400x400" alt="Image 2">
+                <img src="https://via.placeholder.com/400x400" alt="Image 3">
+                <img src="https://via.placeholder.com/400x400" alt="Image 4">
+                <img src="https://via.placeholder.com/400x400" alt="Image 5">
+                <img src="https://via.placeholder.com/400x400" alt="Image 6">
+            </div>
+        </div>
+
+        <!-- Example Blog Post with Special HTML Content -->
+        <div class="blog-post">
+            <h2>Bach</h2>
+            <div class="video-container">
+                <iframe 
+                    width="560" 
+                    height="315" 
+                    src="https://www.youtube.com/embed/3uiUHvET_jg?si=BAYiqlXBfI_vJscw&autoplay=1&mute=0" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div data-include="footer.html"></div>
+
+</body>
+</html>
