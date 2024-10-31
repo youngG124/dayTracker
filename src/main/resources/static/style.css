@@ -17,6 +17,7 @@ body {
 
 /* Blog Header */
 .blog-header {
+    min-width:640px;
     text-align: center;
     padding: 20px;
     background-color: #fff;
@@ -33,6 +34,7 @@ body {
 
 /* Menu Bar */
 .menu-bar {
+    min-width:640px;
     display: flex;
     justify-content: flex-start;
     background-color: #333;
@@ -117,6 +119,7 @@ body {
 
 /* Footer */
 .footer {
+    min-width:640px;
     background-color: #333;
     color: #eee;
     text-align: center;
@@ -136,4 +139,17 @@ body {
 
 .footer a:hover {
     text-decoration: underline;
+}
+
+/* Style for the info box */
+.info-box {
+    position: absolute;
+    width: 200px;
+    height: 300px;
+    background-color: lightyellow;
+    border: 2px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    display: none; /* Initially hidden */
 }
