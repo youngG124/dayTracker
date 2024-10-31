@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Tracker</title>
+    <title>Day Tracker</title>
     <link rel="stylesheet" href="style.css">
     <script>
         function includeHTML() {
@@ -32,7 +32,7 @@
         <div class="blog-post">
             <h2>This blog is..</h2>
             <p>
-                This blog is for tracking disciplines, view some of saved images.
+                This blog is for tracking disciplines, curating some of saved images.
                 <br>Blog's server is on EC2(AWS), made of SpringBoot(Java),
                 <br>Images are on local SSD and fastAPI(python) is serving it.
                 <br>Visit 'about' and check more information.
@@ -43,46 +43,118 @@
         <!-- Example Blog Post with Image Grid -->
         <div class="blog-post">
             <h2>Disciplines</h2>
-            <div id="annual_calendar_1">
-
+            <div id="discipline">
+                <h3>run</h3>
+                <div id="annual_calendar_1"></div>
             </div>
-            <div id="annual_calendar_2">
-
+            <div id="discipline">
+                <h3>read</h3>
+                <div id="annual_calendar_2"></div>
             </div>
-            
             <script>
+                const today = new Date();
+                const dayIndex = today.getDay();
+
                 function createCalendar(elementId) {
                     tbody = document.createElement('table');
                     tbody.style = 'border-spacing:5px;';
-                
-                    const day_arr = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
                     const week_arr = [];
                 
-                    for(let i=0; i<53; i++) {
+                    // add just 52 week, and add additional days at last
+                    for(let i=0; i<52; i++) {
                         week_arr.push(i);
                     }
-                    
+
+                    const dayNames = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+                    const day_arr = [];
+
+                    const originalDisciplineRecord = [0, 1, 0, 1]; // get this from database
+                    const defaultDisciplineRecord = [];
+
+                    // 기본 설정
+                    for(let i=0; i<364; i++) {
+                        defaultDisciplineRecord.push(0);
+                    }
+                    for(let i=0; i<dayIndex; i++) {
+                        defaultDisciplineRecord.push(0);
+                    }
+                    // 기본 설정 날보다 작다면
+                    if(originalDisciplineRecord.length < defaultDisciplineRecord.length) {
+                        // 저장 된 날 만큼 pop 후 data를 채우기
+                        for(let i=0; i<originalDisciplineRecord.length; i++) {
+                            defaultDisciplineRecord.pop();
+                        }
+                        disciplineRecord = defaultDisciplineRecord.concat(originalDisciplineRecord);
+                    } else { // 기본 설정 일자 수 보다 크다면
+                        // discipline 
+                    }
+
+                    dayNames.forEach(dayName => {
+                        let day = document.createElement('tr'); // Create a new row element
+                        day.className = dayName; // Optionally add a class with the day's name
+                        day_arr.push(day); // Add the created row to the array
+                    });
+
                     day_arr.forEach(function(day) {
-                        let row = document.createElement('tr');
-                        row.className = day;
-                
-                        week_arr.forEach(function(week) {
-                            let col = document.createElement('td');           
-                
-                            col.style = 'width:12px; height:14px; background-Color:lightgrey; border-radius:2px;';
-                            row.appendChild(col);
+                        tbody.appendChild(day);
+                    });
+
+                    dayNumber = 0;
+                    week_arr.forEach(function(week) {
+                        day_arr.forEach(function(day) {
+                            let row = createRow(disciplineRecord[dayNumber], dayNumber);
+                            dayNumber++;
+                            day.appendChild(row);
                         });
-                
-                        tbody.appendChild(row);
+                    });
+
+                    // 마지막 주는 요일에 대해 동적으로 처리
+                    dayNumber = 364;
+                    day_arr.forEach(function(day, index) {
+                        if(index < dayIndex) {
+                            let row = createRow(disciplineRecord[dayNumber], dayNumber);
+                            dayNumber++;
+                            day.appendChild(row);
+                        }
                     });
                 
                     document.getElementById(elementId).appendChild(tbody);
-                }
+                }                
                 
                 createCalendar('annual_calendar_1')
                 createCalendar('annual_calendar_2')
+
+                function createRow(recordType, dayNumber) {
+                    let row = document.createElement('td');
+                    styleString = 'width:15px; height:10px; border-radius:2px;';
+                    if(recordType == 1) {
+                        styleString += 'background-Color:green;'
+                    } else {
+                        styleString += 'background-Color:lightgrey;'
+                    }
+
+                    let day_data_string = "date : " + subtractDays(today, 365 - dayNumber);
+
+                    row.setAttribute('data-info', day_data_string);
+                    row.className = 'day';
+                    row.style = styleString;
+                    row.id = dayNumber;
+
+                    return row;
+                }
+
+                // Function to subtract days from a date
+                function subtractDays(date, days) {
+                    const result = new Date(date); // Create a copy of the date
+                    result.setDate(result.getDate() - days); // Subtract days
+                    return result.toDateString();
+                }
             </script>
         </div>
+
+        <!-- Box to display on hover -->
+        <div id="infoBox" class="info-box"></div>
 
         <!-- Example Blog Post with Image Grid -->
         <div class="blog-post">
@@ -104,7 +176,7 @@
                 <iframe 
                     width="560" 
                     height="315" 
-                    src="https://www.youtube.com/embed/3uiUHvET_jg?si=BAYiqlXBfI_vJscw&autoplay=1&mute=0" 
+                    src="https://www.youtube.com/embed/3uiUHvET_jg?si=BAYiqlXBfI_vJscw&autoplay=1&mute=1" 
                     title="YouTube video player" 
                     frameborder="0" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
@@ -118,5 +190,32 @@
     <!-- Footer -->
     <div data-include="footer.html"></div>
 
+    <script>
+        const infoBox = document.getElementById('infoBox');
+
+        // Function to show the info box with specific content
+        function showInfoBox(event, content) {
+            infoBox.style.display = 'block';
+            infoBox.style.left = `${event.pageX + 10}px`; // Position next to the mouse
+            infoBox.style.top = `${event.pageY + 10}px`;
+            infoBox.textContent = content; // Set the information content
+        }
+
+        // Function to hide the info box
+        function hideInfoBox() {
+            infoBox.style.display = 'none';
+        }
+
+        // Add event listeners to each hoverable <td> for showing/hiding the info box
+        document.querySelectorAll('.day').forEach(td => {
+            td.addEventListener('mouseenter', (event) => {
+                showInfoBox(event, td.getAttribute('data-info'));
+            });
+            td.addEventListener('mousemove', (event) => {
+                showInfoBox(event, td.getAttribute('data-info'));
+            });
+            td.addEventListener('mouseleave', hideInfoBox);
+        });
+    </script>
 </body>
 </html>
