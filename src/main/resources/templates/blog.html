@@ -15,7 +15,7 @@
                     .catch(error => console.error('Error loading HTML:', error));
             });
         }
-        window.onload = includeHTML;
+        window.onload = includeHTML; // git test
     </script>
 </head>
 <body>
@@ -43,21 +43,43 @@
         <!-- Example Blog Post with Image Grid -->
         <div class="blog-post">
             <h2>Disciplines</h2>
-            <div id="discipline">
-                <h3>run</h3>
+            <br>
+            <div id="discipline" class="discipline-container">
+                <div class="discipline-header">
+                    <h3>run</h3>
+                    <button class="align-right">record today</button>
+                </div>
                 <div id="annual_calendar_1"></div>
             </div>
-            <div id="discipline">
-                <h3>read</h3>
+            <br>
+            <div id="discipline" class="discipline-container">
+                <div class="discipline-header">
+                    <h3>read</h3>
+                    <button class="align-right">record today</button>
+                </div>
                 <div id="annual_calendar_2"></div>
             </div>
             <script>
+                // get All Discipline datas from DB at this point
+                // every discipline and discipline metadatas
+                // annual-records of each disciplines
+                // data would be like :
+                const data = {
+                    disciplineName : "run",
+                    disciplineIcon : "something like icon"
+                }
+
+                // const disciplineList = [data1, data2, data3, andOrSo, "..."];
+                // we need to make annual calendar via this list
+                // and get annual data with the discipline name from DB
+                // and paint the calendar green with the data
+
                 const today = new Date();
                 const dayIndex = today.getDay();
 
                 function createCalendar(elementId) {
                     tbody = document.createElement('table');
-                    tbody.style = 'border-spacing:5px;';
+                    tbody.style = 'border-spacing:4px;';
 
                     const week_arr = [];
                 
@@ -120,7 +142,7 @@
                     });
                 
                     document.getElementById(elementId).appendChild(tbody);
-                }                
+                }
                 
                 createCalendar('annual_calendar_1')
                 createCalendar('annual_calendar_2')
@@ -134,7 +156,11 @@
                         styleString += 'background-Color:lightgrey;'
                     }
 
-                    let day_data_string = "date : " + subtractDays(today, 365 - dayNumber);
+                    // 마지막 주 직전 날이 day 363, 마지막 주에 추가 된 day 수가 dayIndex(목요일이면 4)
+                    // 둘의 합에서 dayNumber를 빼면 거슬러 가야 하는 날짜가 나옴. dayNumber가 0일 경우
+                    // 목요일이라면 today - 367(363에 4를 더함)을 한 날짜가 day 0.
+                    // 오늘을 구한다면 363 + dayIndex 가 dayNumber와 같으므로, 결국 today - 0 이므로 오늘이 됨.
+                    let day_data_string = "date : " + subtractDays(today, 363 + dayIndex - dayNumber);
 
                     row.setAttribute('data-info', day_data_string);
                     row.className = 'day';
@@ -154,7 +180,9 @@
         </div>
 
         <!-- Box to display on hover -->
-        <div id="infoBox" class="info-box"></div>
+        <div id="infoBox" class="info-box">
+            <h4 id="infoBoxTitle"></h4>
+        </div>
 
         <!-- Example Blog Post with Image Grid -->
         <div class="blog-post">
@@ -173,13 +201,104 @@
         <div class="blog-post">
             <h2>Bach</h2>
             <div class="video-container">
-                <div id="player"></div>
+                <iframe 
+                    width="560" 
+                    height="315" 
+                    src="https://www.youtube.com/embed/3uiUHvET_jg?si=BAYiqlXBfI_vJscw&autoplay=1&mute=1" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen>
+                </iframe>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
     <div data-include="footer.html"></div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>Submit Your Record</h3>
+            <input type="text" id="user-input" maxlength="35" placeholder="Enter a short message (max 35 chars)" />
+            <button id="submit-button">Submit</button>
+        </div>
+    </div>
+
+    
+    <script>
+        // record today button modal
+
+        // Get elements
+        const modal = document.getElementById('modal');
+        const openButton = document.querySelector('.align-right');
+        const closeButton = document.querySelector('.close-button');
+        const submitButton = document.getElementById('submit-button');
+        const userInput = document.getElementById('user-input');
+
+        // Open modal on button click
+        openButton.addEventListener('click', () => {
+            console.log('clicked!');
+            modal.style.display = 'flex'; // Show modal as flexbox centered
+            userInput.value = ''; // Clear input field
+        });
+
+        // Close modal on close button click
+        closeButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside modal content
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Handle submit action
+        submitButton.addEventListener('click', () => {
+            const userInputValue = userInput.value.trim();
+            if (userInputValue) {
+                console.log('Submitted:', userInputValue); // Handle the submitted data
+                modal.style.display = 'none'; // Close the modal after submission
+            } else {
+                alert('Please enter a valid message.');
+            }
+        });
+    </script>
+
+    <script>
+        // day box hover info box
+
+        const infoBox = document.getElementById('infoBox');
+        const infoBoxTitle = document.getElementById('infoBoxTitle');
+
+        // Function to show the info box with specific content
+        function showInfoBox(event, content) {
+            infoBox.style.display = 'block';
+            infoBox.style.left = `${event.pageX + 10}px`; // Position next to the mouse
+            infoBox.style.top = `${event.pageY + 10}px`;
+            infoBoxTitle.textContent = content; // Set the information content
+        }
+
+        // Function to hide the info box
+        function hideInfoBox() {
+            infoBox.style.display = 'none';
+        }
+
+        // Add event listeners to each hoverable <td> for showing/hiding the info box
+        document.querySelectorAll('.day').forEach(td => {
+            td.addEventListener('mouseenter', (event) => {
+                showInfoBox(event, td.getAttribute('data-info'));
+            });
+            td.addEventListener('mousemove', (event) => {
+                showInfoBox(event, td.getAttribute('data-info'));
+            });
+            td.addEventListener('mouseleave', hideInfoBox);
+        });
+    </script>
 
     <!-- YouTube IFrame API script -->
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -216,35 +335,6 @@
                 console.error("Player is not ready yet.");
             }
         }
-    </script>
-
-    <script>
-
-        const infoBox = document.getElementById('infoBox');
-
-        // Function to show the info box with specific content
-        function showInfoBox(event, content) {
-            infoBox.style.display = 'block';
-            infoBox.style.left = `${event.pageX + 10}px`; // Position next to the mouse
-            infoBox.style.top = `${event.pageY + 10}px`;
-            infoBox.textContent = content; // Set the information content
-        }
-
-        // Function to hide the info box
-        function hideInfoBox() {
-            infoBox.style.display = 'none';
-        }
-
-        // Add event listeners to each hoverable <td> for showing/hiding the info box
-        document.querySelectorAll('.day').forEach(td => {
-            td.addEventListener('mouseenter', (event) => {
-                showInfoBox(event, td.getAttribute('data-info'));
-            });
-            td.addEventListener('mousemove', (event) => {
-                showInfoBox(event, td.getAttribute('data-info'));
-            });
-            td.addEventListener('mouseleave', hideInfoBox);
-        });
 
         window.addEventListener('scroll', function() {
             playVideoAt30Volume();
@@ -253,6 +343,6 @@
         document.addEventListener('touchstart', function(event) {
             playVideoAt30Volume();
         });
-    </script>
+    </script>   
 </body>
 </html>
