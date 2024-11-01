@@ -173,16 +173,7 @@
         <div class="blog-post">
             <h2>Bach</h2>
             <div class="video-container">
-                <iframe 
-                    width="560" 
-                    height="315" 
-                    src="https://www.youtube.com/embed/3uiUHvET_jg?si=BAYiqlXBfI_vJscw&autoplay=1&mute=1" 
-                    title="YouTube video player" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    referrerpolicy="strict-origin-when-cross-origin" 
-                    allowfullscreen>
-                </iframe>
+                <div id="player"></div>
             </div>
         </div>
     </main>
@@ -190,7 +181,45 @@
     <!-- Footer -->
     <div data-include="footer.html"></div>
 
+    <!-- YouTube IFrame API script -->
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
+        let player;
+        let isPlayerReady = false; // Track player readiness
+
+        // Load and initialize YouTube Player API
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                videoId: '3uiUHvET_jg', // Replace with your video ID
+                playerVars: { 
+                    'autoplay': 0, // Start paused
+                    'mute': 0 // Allow sound
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        // Event to handle when the player is ready
+        function onPlayerReady(event) {
+            isPlayerReady = true; // Set player readiness to true
+            player.setVolume(30); // Set initial volume to 30%
+        }
+
+        // Function to play video at 30% volume
+        function playVideoAt30Volume() {
+            if (isPlayerReady) { // Check if the player is ready
+                player.setVolume(30); // Ensure volume is at 30%
+                player.playVideo(); // Start playing the video
+            } else {
+                console.error("Player is not ready yet.");
+            }
+        }
+    </script>
+
+    <script>
+
         const infoBox = document.getElementById('infoBox');
 
         // Function to show the info box with specific content
@@ -215,6 +244,14 @@
                 showInfoBox(event, td.getAttribute('data-info'));
             });
             td.addEventListener('mouseleave', hideInfoBox);
+        });
+
+        window.addEventListener('scroll', function() {
+            playVideoAt30Volume();
+        });
+
+        document.addEventListener('touchstart', function(event) {
+            playVideoAt30Volume();
         });
     </script>
 </body>
