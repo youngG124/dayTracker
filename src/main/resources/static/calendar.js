@@ -101,3 +101,8 @@ document.addEventListener('wheel', function(event) {
 
 // Load the calendar for the current month on page load
 loadCalendar(currentDate);
+
+
+
+
+// "Embrace each day as a fresh opportunity to grow and explore."
