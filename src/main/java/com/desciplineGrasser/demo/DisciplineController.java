@@ -19,28 +19,28 @@ public class DisciplineController {
     @Autowired
     private DisciplineService disciplineService;
 
-    // Create or Update a User
+    // Create or Update a Discipline
     @PostMapping
     public ResponseEntity<Discipline> createUser(@RequestBody Discipline discipline) {
         return ResponseEntity.ok(disciplineService.saveDiscipline(discipline));
     }
 
-    // Get All Users
+    // Get All Disciplines
     @GetMapping
-    public ResponseEntity<List<Discipline>> getAllUsers() {
+    public ResponseEntity<List<Discipline>> getAllDisciplines() {
         return ResponseEntity.ok(disciplineService.getAllDisciplines());
     }
 
-    // Get User by ID
+    // Get Discipline by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Discipline> getUserById(@PathVariable String id) {
+    public ResponseEntity<Discipline> getDisciplineById(@PathVariable String id) {
         Optional<Discipline> user = disciplineService.getUserById(id);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Delete User
+    // Delete Discipline
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    public ResponseEntity<Void> deleteDiscipline(@PathVariable String id) {
         disciplineService.deleteDiscipline(id);
         return ResponseEntity.noContent().build();
     }
