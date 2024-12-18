@@ -21,7 +21,7 @@ public class DisciplineController {
 
     // Create or Update a Discipline
     @PostMapping
-    public ResponseEntity<Discipline> createUser(@RequestBody Discipline discipline) {
+    public ResponseEntity<Discipline> createDiscipline(@RequestBody Discipline discipline) {
         return ResponseEntity.ok(disciplineService.saveDiscipline(discipline));
     }
 
