@@ -34,4 +34,27 @@ public class Discipline {
     public String getName() {
         return name;
     }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getExplain() {
+        return explain;
+    }
+
+    public void setExplain(String explain) {
+        this.explain = explain;
+    }
+
+    public List<String> getRecord() {
+        return record;
+    }
+    public void setRecord(List<String> record) {
+        this.record = record;
+    }
 }
