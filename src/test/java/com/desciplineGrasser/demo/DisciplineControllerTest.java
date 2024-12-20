@@ -20,7 +20,8 @@ class disciplineControllerTest {
 
     @Test
     void testCreatediscipline() throws Exception {
-        Discipline discipline = new discipline("John Doe", "john.doe@example.com", 30);
+        //String id, String name, String icon, String explain, List<String> record
+        Discipline discipline = new discipline(null, run, 🏃🏻, "5K, 24m", new List<>("", ""));
 
         when(disciplineService.saveDiscipline(Mockito.any(Discipline.class))).thenReturn(discipline);
 
