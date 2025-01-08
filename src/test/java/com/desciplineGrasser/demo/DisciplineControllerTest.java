@@ -1,5 +1,7 @@
 package com.desciplineGrasser.demo;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,8 @@ class disciplineControllerTest {
     @Test
     void testCreatediscipline() throws Exception {
         //String id, String name, String icon, String explain, List<String> record
-        Discipline discipline = new discipline(null, run, 🏃🏻, "5K, 24m", new List<>("", ""));
+        List<String> list = new ArrayList<>();
+        Discipline discipline = new Discipline("", "run", "🏃🏻", "5K, 24m", list);
 
         when(disciplineService.saveDiscipline(Mockito.any(Discipline.class))).thenReturn(discipline);
 
